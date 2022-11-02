@@ -20,19 +20,16 @@ do
 		3)	
 			ejecutable="ejecu.ex"
 
-			echo $ejecutable
-
 			if test -e $ejecutable && test -x $ejecutable
 			then
 				echo "El archivo se va a ejecutar."
 
 				read nasistentes
 				
-				if $nasistentes -le 0
-				then
+				if [ $nasistentes -le 0 ]; then
 					echo "El numero de asistentes debe ser mayor que 0."
 				else
-					./ejecu.ex $*
+					./ejecu.ex $nasistentes
 				fi
 			else
 				echo "El ejecutable no existe o no tiene permisos de ejecución"
