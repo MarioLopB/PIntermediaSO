@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));
 
-	printf("Entrada");
+	printf("Entrada\n");
 
 	tecnico = fork();
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 		ss.sa_handler = handlerTecnico;
 		if (-1 == sigaction(SIGUSR1, &ss, NULL))
 	{
-		perror("TECNICO: sigaction");
+		perror("TECNICO: sigaction\n");
 		exit(-1);
 	}
 		pause();
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
 	if (encargado != 0 && tecnico != 0)
 	{
-		printf("Encargado");
+		printf("Coordinador\n");
 
 		kill(tecnico, SIGUSR1);
 
@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
 		}
 		else if (valido == 0)
 		{
+			printf("No valido\n");
 			kill(tecnico, SIGKILL);
 			kill(encargado, SIGKILL);
 		}
