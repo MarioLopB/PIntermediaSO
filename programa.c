@@ -8,9 +8,21 @@
 #include <unistd.h>
 #include <time.h>
 
-void handler(int s)
+void handlerTecnico(int s)
 {
-	write(STDOUT_FILENO, "Señal recibida\n",17);
+	
+		printf("Tecnico durmiendo...\n");
+		sleep(calculaAleatorios(3, 6));
+		if (calculaAleatorios(0, 1) == 1)
+		{
+			printf("El vuelo es viable.\n");
+			exit(1);
+		}
+		else
+		{
+			printf("El vuelo no es viable.\n");
+			exit(0);
+		}
 }
 
 int calculaAleatorios(int min, int max)
@@ -34,29 +46,15 @@ int main(int argc, char *argv[])
 		encargado = fork();
 	}
 
-	ss.sa_handler = handler;
-	if (-1 == sigaction(SIGUSR1, &ss, NULL))
+	if (tecnico == 0)
+	{
+		ss.sa_handler = handlerTecnico;
+		if (-1 == sigaction(SIGUSR1, &ss, NULL))
 	{
 		perror("TECNICO: sigaction");
 		exit(-1);
 	}
-
-	if (tecnico == 0 && encargado != 0)
-	{
 		pause();
-		
-		printf("Tecnico durmiendo...\n");
-		sleep(calculaAleatorios(3, 6));
-		if (calculaAleatorios(0, 1) == 1)
-		{
-			printf("El vuelo es viable.\n");
-			exit(1);
-		}
-		else
-		{
-			printf("El vuelo no es viable.\n");
-			exit(0);
-		}
 	}
 
 	if (encargado != 0 && tecnico != 0)
