@@ -17,7 +17,7 @@ void handlerTecnico(int s)
 {
 	
 		sleep(calculaAleatorios(3, 6));
-		if (calculaAleatorios(0, 1) == 1)
+		if (calculaAleatorios(1, 10) != 1)
 		{
 			exit(1);
 		}
