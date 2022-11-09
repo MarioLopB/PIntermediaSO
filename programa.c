@@ -10,6 +10,7 @@
 
 int calculaAleatorios(int min, int max)
 {
+	srand(getpid());
 	return rand() % (max - min + 1) + min;
 }
 
@@ -33,8 +34,6 @@ int main(int argc, char *argv[])
 	int numas = atoi(argv[1]);
 	int tecnico, encargado, asistentes[numas];
 	struct sigaction ss;
-
-	srand(time(NULL));
 
 	printf("Entrada\n");
 
