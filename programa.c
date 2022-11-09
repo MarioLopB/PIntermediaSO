@@ -63,6 +63,8 @@ int main(int argc, char *argv[])
 	{
 		printf("Coordinador\n");
 
+		sleep(1);
+
 		kill(tecnico, SIGUSR1);
 
 		int estado, valido;
