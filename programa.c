@@ -8,6 +8,11 @@
 #include <unistd.h>
 #include <time.h>
 
+int calculaAleatorios(int min, int max)
+{
+	return rand() % (max - min + 1) + min;
+}
+
 void handlerTecnico(int s)
 {
 	
@@ -23,11 +28,6 @@ void handlerTecnico(int s)
 			printf("El vuelo no es viable.\n");
 			exit(0);
 		}
-}
-
-int calculaAleatorios(int min, int max)
-{
-	return rand() % (max - min + 1) + min;
 }
 
 int main(int argc, char *argv[])
