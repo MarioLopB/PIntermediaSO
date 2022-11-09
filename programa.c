@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
 
 	printf("Entrada\n");
 
+	sleep(1);
+
 	tecnico = fork();
 
 	if (tecnico != 0)
