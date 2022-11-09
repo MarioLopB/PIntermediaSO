@@ -16,16 +16,13 @@ int calculaAleatorios(int min, int max)
 void handlerTecnico(int s)
 {
 	
-		printf("Tecnico durmiendo...\n");
 		sleep(calculaAleatorios(3, 6));
 		if (calculaAleatorios(0, 1) == 1)
 		{
-			printf("El vuelo es viable.\n");
 			exit(1);
 		}
 		else
 		{
-			printf("El vuelo no es viable.\n");
 			exit(0);
 		}
 }
@@ -74,11 +71,12 @@ int main(int argc, char *argv[])
 
 		if (valido == 1)
 		{
+			printf("El vuelo es viable.\n");
 			kill(encargado, SIGUSR1);
 		}
 		else if (valido == 0)
 		{
-			printf("No valido\n");
+			printf("El vuelo no es viable.\n");
 			kill(tecnico, SIGKILL);
 			kill(encargado, SIGKILL);
 		}
