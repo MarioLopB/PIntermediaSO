@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
 	if (encargado != 0 && tecnico != 0)
 	{
-		printf("Encargado")
+		printf("Encargado");
 
 		kill(tecnico, SIGUSR1);
 
