@@ -16,28 +16,18 @@ int calculaAleatorios(int min, int max)
 
 void handlerTecnico(int s)
 {
-	
-		sleep(calculaAleatorios(3, 6));
-		if (calculaAleatorios(0,1) == 1)
-		{
-			exit(1);
-		}
-		else
-		{
-			exit(0);
-		}
+
+	printf("Handler\n");
+
+	exit(calculaAleatorios(0,1));
 }
 
 int main(int argc, char *argv[])
 {
-	pid_t p;
 	int numas = atoi(argv[1]);
-	int tecnico, encargado, asistentes[numas];
-	struct sigaction ss;
+	pid_t tecnico, encargado, asistentes[numas];
 
 	printf("Entrada\n");
-
-	sleep(1);
 
 	tecnico = fork();
 
@@ -45,23 +35,21 @@ int main(int argc, char *argv[])
 	{
 		encargado = fork();
 	}
-	
+
 	if (tecnico == 0)
 	{
-		printf("Tecnico");
-
-		ss.sa_handler = handlerTecnico;
+		struct sigaction ss;
+		ss.sa_handler = &handlerTecnico;
+		ss.sa_flags = 0;
+		sigemptyset(&ss.sa_mask);
 		if (-1 == sigaction(SIGUSR1, &ss, NULL))
-	{
-		perror("TECNICO: sigaction\n");
-		exit(-1);
-	}
+		{
+			perror("TECNICO: sigaction\n");
+			exit(-1);
+		}
 		pause();
-	}
-
-	if (encargado != 0 && tecnico != 0)
+	} else if (encargado != 0 && tecnico != 0)
 	{
-		printf("Coordinador\n");
 
 		sleep(1);
 
@@ -69,8 +57,14 @@ int main(int argc, char *argv[])
 
 		int estado, valido;
 
+		sleep(1);
+
 		wait(&estado);
 		valido = WEXITSTATUS(estado);
+
+		printf("Coordinador\n");
+
+		sleep(calculaAleatorios(3,6));
 
 		if (valido == 1)
 		{
