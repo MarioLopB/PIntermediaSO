@@ -6,8 +6,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <time.h>
 
+// Calcula un número aleatorio entre min y max
 int calculaAleatorios(int min, int max)
 {
 	srand(getpid());
@@ -34,12 +34,14 @@ void handlerEncargado(int s)
 	exit(calculaAleatorios(0, 1));
 }
 
+// Manejadora del Asistente. Devuelve un número de pasajeros entre 20 y 30.
 void handlerAsistente(int s)
 {
 	sleep(calculaAleatorios(3, 6));
 	exit(calculaAleatorios(20, 30));
 }
 
+// Crea a los asistentes de vuelo, que esperan hasta recibir una señal de coordinador
 void crearAsistentes(int *asistentes, int n)
 {
 	pid_t p;
@@ -71,11 +73,12 @@ void crearAsistentes(int *asistentes, int n)
 
 int main(int argc, char *argv[])
 {
+
 	int num_asistentes = atoi(argv[1]);
 	pid_t *asistentes = malloc(sizeof(int) * num_asistentes);
 	pid_t tecnico, encargado;
 
-	printf("Entrada\n");
+	printf("COORDINADOR: Inciando simulación.\n");
 
 	tecnico = fork();
 
@@ -117,14 +120,12 @@ int main(int argc, char *argv[])
 
 		kill(tecnico, SIGUSR1);
 
-		int estado, valido, overbooking, pasajeros;
+		int estado, valido, overbooking, pasajeros = 0;
 
 		sleep(1);
 
 		wait(&estado);
 		valido = WEXITSTATUS(estado);
-
-		printf("Coordinador\n");
 
 		if (valido == 1)
 		{
@@ -142,18 +143,21 @@ int main(int argc, char *argv[])
 			crearAsistentes(asistentes, num_asistentes);
 			sleep(2);
 
-			killpg(-1, SIGUSR2);
+			for (int i = 0; i < num_asistentes; i++)
+			{
+				kill(asistentes[i], SIGUSR2);
+			}
 
 			for (int i = 0; i < num_asistentes; i++)
 			{
 				wait(&estado);
-				pasajeros = WEXITSTATUS(estado);
+				pasajeros = pasajeros + WEXITSTATUS(estado);
 			}
 
 			if (overbooking == 1)
 				pasajeros = pasajeros - 10;
 
-			printf("COORDINADOR: El número de pasajeros es %d", pasajeros);
+			printf("COORDINADOR: El número de pasajeros es %d\n\n", pasajeros);
 		}
 		else if (valido == 0)
 		{
