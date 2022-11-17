@@ -42,7 +42,7 @@ void handlerAsistente(int s)
 }
 
 // Crea a los asistentes de vuelo, que esperan hasta recibir una señal de coordinador
-void crearAsistentes(int *asistentes, int n)
+void crearAsistentes(pid_t p *asistentes, int n)
 {
 	pid_t p;
 
