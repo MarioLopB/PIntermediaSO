@@ -42,7 +42,7 @@ void handlerAsistente(int s)
 }
 
 // Crea a los asistentes de vuelo, que esperan hasta recibir una señal de coordinador
-void crearAsistentes(pid_t p *asistentes, int n)
+void crearAsistentes(pid_t *asistentes, int n)
 {
 	pid_t p;
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
 		kill(tecnico, SIGUSR1);
 
-		int estado, valido, overbooking, pasajeros = 0;
+		int estado, valido, overbooking, pasajeros, totalpasajeros;
 
 		sleep(1);
 
@@ -139,6 +139,10 @@ int main(int argc, char *argv[])
 			{
 				printf("ENCARGADO: Hay overbooking.\n");
 			}
+			else
+			{
+				printf("ENCARGADO: Hay overbooking\n");
+			}
 
 			crearAsistentes(asistentes, num_asistentes);
 			sleep(2);
@@ -150,14 +154,28 @@ int main(int argc, char *argv[])
 
 			for (int i = 0; i < num_asistentes; i++)
 			{
-				wait(&estado);
-				pasajeros = pasajeros + WEXITSTATUS(estado);
+				pid_t current = wait(&estado);
+				int currentasis = 0;
+
+				for (int j = 0; j < num_asistentes; j++)
+				{
+					if(current == asistentes[j]){
+						current = j;
+					}
+				}
+
+				pasajeros = WEXITSTATUS(estado);
+
+				printf("COORDINADOR: EL asistente %d a embarcado %d pasajeros\n", current+1, pasajeros);
+
+				totalpasajeros = totalpasajeros + pasajeros;
+
 			}
 
 			if (overbooking == 1)
 				pasajeros = pasajeros - 10;
 
-			printf("COORDINADOR: El número de pasajeros es %d\n\n", pasajeros);
+			printf("COORDINADOR: El número de pasajeros es %d\n\n", totalpasajeros);
 		}
 		else if (valido == 0)
 		{
