@@ -18,7 +18,7 @@ int calculaAleatorios(int min, int max)
 void handlerTecnico(int s)
 {
 
-	printf("TECNICO: Calculando si el vuelo es viable.\n");
+	printf("[TECNICO] Calculando si el vuelo es viable.\n");
 
 	sleep(calculaAleatorios(3, 6));
 	exit(calculaAleatorios(0, 1));
@@ -28,7 +28,7 @@ void handlerTecnico(int s)
 void handlerEncargado(int s)
 {
 
-	printf("ENCARGADO: Calculando si hay overbooking.\n");
+	printf("[ENCARGADO] Calculando si hay overbooking.\n");
 
 	sleep(2);
 	exit(calculaAleatorios(0, 1));
@@ -53,7 +53,7 @@ void crearAsistentes(pid_t *asistentes, int n)
 		if (p != 0)
 		{
 			asistentes[i] = p;
-			printf("COORDINADOR: Asistente %d creado.\n", i + 1);
+			printf("[COORDINADOR] Asistente %d creado.\n", i + 1);
 		}
 		else
 		{
@@ -63,7 +63,7 @@ void crearAsistentes(pid_t *asistentes, int n)
 			sigemptyset(&ss.sa_mask);
 			if (-1 == sigaction(SIGUSR2, &ss, NULL))
 			{
-				perror("ASISTENTE: sigaction error\n");
+				perror("[ASISTENTE] ERROR: Sigaction error\n");
 				exit(-1);
 			}
 			pause();
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 	pid_t *asistentes = malloc(sizeof(int) * num_asistentes);
 	pid_t tecnico, encargado;
 
-	printf("COORDINADOR: Inciando simulación.\n");
+	printf("[COORDINADOR] Inciando simulación.\n");
 
 	tecnico = fork();
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 		sigemptyset(&ss.sa_mask);
 		if (-1 == sigaction(SIGUSR1, &ss, NULL))
 		{
-			perror("TECNICO: sigaction error\n");
+			perror("[TECNICO] sigaction error\n");
 			exit(-1);
 		}
 		pause();
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		sigemptyset(&ss.sa_mask);
 		if (-1 == sigaction(SIGUSR1, &ss, NULL))
 		{
-			perror("ENCARGADO: sigaction error\n");
+			perror("[ENCARGADO] sigaction error\n");
 			exit(-1);
 		}
 		pause();
@@ -118,30 +118,36 @@ int main(int argc, char *argv[])
 
 		sleep(1);
 
+		// Envía una señal al técnico
 		kill(tecnico, SIGUSR1);
 
-		int estado, valido, overbooking, pasajeros, totalpasajeros;
+		int estado, valido, overbooking, pasajeros, totalpasajeros = 0;
 
 		sleep(1);
 
+		//Espera a que el técnico termine.
 		wait(&estado);
 		valido = WEXITSTATUS(estado);
 
+		// Si el vuelo no es valdio termina los procesos técnico y encargado.
+		// En caso contrario, continua el proceso.
 		if (valido == 1)
 		{
-			printf("COORDINADOR: El vuelo es viable.\n");
+			printf("[COORDINADOR] El vuelo es viable.\n");
+			// Envía una señal al encargado.
 			kill(encargado, SIGUSR1);
 
+			// Espera a que el encargado termine.
 			wait(&estado);
 			overbooking = WEXITSTATUS(estado);
 
 			if (overbooking == 1)
 			{
-				printf("ENCARGADO: Hay overbooking.\n");
+				printf("[ENCARGADO] Hay overbooking.\n");
 			}
 			else
 			{
-				printf("ENCARGADO: Hay overbooking\n");
+				printf("[ENCARGADO] No hay overbooking\n");
 			}
 
 			crearAsistentes(asistentes, num_asistentes);
@@ -152,34 +158,35 @@ int main(int argc, char *argv[])
 				kill(asistentes[i], SIGUSR2);
 			}
 
+			// Espera a que los asistentes terminen el embarque e imprime los pasajeros
+			// por asistente y los pasajeros totales.
 			for (int i = 0; i < num_asistentes; i++)
 			{
-				pid_t current = wait(&estado);
+				pid_t currentpid = wait(&estado);
+				pasajeros = WEXITSTATUS(estado);
 				int currentasis = 0;
 
 				for (int j = 0; j < num_asistentes; j++)
 				{
-					if(current == asistentes[j]){
-						current = j;
+					if (currentpid == asistentes[j])
+					{
+						currentasis = j;
 					}
 				}
 
-				pasajeros = WEXITSTATUS(estado);
-
-				printf("COORDINADOR: EL asistente %d a embarcado %d pasajeros\n", current+1, pasajeros);
+				printf("[COORDINADOR] EL asistente %d a embarcado %d pasajeros\n", currentasis + 1, pasajeros);
 
 				totalpasajeros = totalpasajeros + pasajeros;
-
 			}
 
 			if (overbooking == 1)
-				pasajeros = pasajeros - 10;
+				totalpasajeros = totalpasajeros - 10;
 
-			printf("COORDINADOR: El número de pasajeros es %d\n\n", totalpasajeros);
+			printf("[COORDINADOR] El número de pasajeros es %d\n\n", totalpasajeros);
 		}
 		else if (valido == 0)
 		{
-			printf("COORDINADOR: El vuelo no es viable.\n");
+			printf("[COORDINADOR] El vuelo no es viable.\n");
 			kill(tecnico, SIGKILL);
 			kill(encargado, SIGKILL);
 		}

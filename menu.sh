@@ -19,16 +19,22 @@ do
         2)gcc *.c -o ejecu.ex;;
         3)
             ejecutable="ejecu.ex"
+            es_numero="^-?[0-9]+([.][0-9]+)?$"
             
             if test -e $ejecutable && test -x $ejecutable
-			then
+            then
                 echo "El archivo se va a ejecutar."
                 echo "Introduzca el número de asistentes."
                 read nasistentes
                 
-                if [ -z $nasistentes ]; then
+                if [[ -z $nasistentes ]] 
+                then
                     echo "ERROR: Debe indicar el número de asistentes."
-                    elif [ $nasistentes -le 0 ]; then
+                elif [[ ! $nasistentes =~ $es_numero ]]
+                then
+                   echo "ERROR: De introducir un número entero sin caracteres."
+                elif [[ $nasistentes == 0 ]] 
+                then
                     echo "ERROR: El número de asistentes debe ser mayor que 0."
                 else
                     ./ejecu.ex $nasistentes
