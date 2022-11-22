@@ -144,10 +144,12 @@ int main(int argc, char *argv[])
 			if (overbooking == 1)
 			{
 				printf("[ENCARGADO] Hay overbooking.\n");
+				sleep(1);
 			}
 			else
 			{
 				printf("[ENCARGADO] No hay overbooking\n");
+				sleep(1);
 			}
 
 			crearAsistentes(asistentes, num_asistentes);

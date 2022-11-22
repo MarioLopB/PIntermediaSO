@@ -36,43 +36,9 @@ function avion()
                       '
 }
 
-logo
-
-while true
-do
-    menu
-    
-    read option
-    
-    case $option in
-        1)cat *.c;;
-        2)gcc *.c -o ejecu.ex;;
-        3)
-            ejecutable="ejecu.ex"
-            es_numero="^-?[0-9]+([.][0-9]+)?$"
-            
-            if test -e $ejecutable && test -x $ejecutable
-            then
-                echo "El archivo se va a ejecutar."
-                echo "Introduzca el número de asistentes."
-                read nasistentes
-                
-                if [[ -z $nasistentes ]] 
-                then
-                    echo "ERROR: Debe indicar el número de asistentes."
-                elif [[ ! $nasistentes =~ $es_numero ]]
-                then
-                   echo "ERROR: Debe introducir un número entero sin caracteres."
-                elif [[ $nasistentes -le 0 ]] 
-                then
-                    echo "ERROR: El número de asistentes debe ser mayor que 0."
-                else
-                    if [[ $nasistentes -ge 10000 ]]
-                    then
-                        echo "ERROR: Demasiados asistentes"
-                    elif [[ $nasistentes -ge 55 ]]
-                    then 
-                        echo "       !        "
+function cohete()
+{
+    echo "       !        "
                         sleep 0.1
                         echo "       ^        "
                         sleep 0.1
@@ -116,6 +82,45 @@ do
                             echo ""
                             sleep 0.1
                         done
+}
+
+logo
+
+while true
+do
+    menu
+    
+    read option
+    
+    case $option in
+        1)cat *.c;;
+        2)gcc *.c -o ejecu.ex;;
+        3)
+            ejecutable="ejecu.ex"
+            es_numero="^-?[0-9]+([.][0-9]+)?$"
+            
+            if test -e $ejecutable && test -x $ejecutable
+            then
+                echo "El archivo se va a ejecutar."
+                echo "Introduzca el número de asistentes."
+                read nasistentes
+                
+                if [[ -z $nasistentes ]] 
+                then
+                    echo "ERROR: Debe indicar el número de asistentes."
+                elif [[ ! $nasistentes =~ $es_numero ]]
+                then
+                   echo "ERROR: Debe introducir un número entero sin caracteres."
+                elif [[ $nasistentes -le 0 ]] 
+                then
+                    echo "ERROR: El número de asistentes debe ser mayor que 0."
+                else
+                    if [[ $nasistentes -ge 10000 ]]
+                    then
+                        echo "ERROR: Demasiados asistentes"
+                    elif [[ $nasistentes -ge 55 ]]
+                    then 
+                        cohete
                         ./ejecu.ex $nasistentes
                     else
                         avion
