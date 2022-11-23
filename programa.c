@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 					}
 				}
 
-				printf("[COORDINADOR] EL asistente %d a embarcado %d pasajeros\n", currentasis + 1, pasajeros);
+				printf("[COORDINADOR] EL asistente %d ha embarcado %d pasajeros\n", currentasis + 1, pasajeros);
 
 				totalpasajeros = totalpasajeros + pasajeros;
 			}
