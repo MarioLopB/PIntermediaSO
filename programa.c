@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 		wait(&estado);
 		valido = WEXITSTATUS(estado);
 
-		// Si el vuelo no es valdio termina los procesos técnico y encargado.
+		// Si el vuelo no es valido termina los procesos técnico y encargado.
 		// En caso contrario, continua el proceso.
 		if (valido == 1)
 		{
